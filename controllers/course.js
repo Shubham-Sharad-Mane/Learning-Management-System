@@ -139,7 +139,7 @@ const checkout=TryCatch(async(req,res)=>{
 //cntroller for payment verification
 const paymentVerification=TryCatch(async(req,res)=>{
     const {razorpay_order_id,razorpay_payment_id,razorpay_signature}=req.body; //for payment verification acess the those thngs from the req.body
-    const body=razorpay_order_id + " " + razorpay_payment_id; 
+    const body = razorpay_order_id + "|" + razorpay_payment_id; 
     const expectedSignature=crypto.createHmac("sha256",process.env.Razorpay_Secret).update(body).digest("hex");
 
     //for authentec payment
