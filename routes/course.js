@@ -4,7 +4,7 @@ const { isAuth } = require("../middlewares/isAuth");
 
 const router=express.Router();
 
-router.get("/course/all",getAllCourses); //route for get the all course
+router.get("/course/all",getAllCourses); //route for get the all courses
 router.get("/course/:id",getSingleCourse); //to get single course
 router.get("/lectures/:id",isAuth,fetchLectures); //to acess the lectures
 router.get("/lecture/:id",isAuth,fetchLecture); //to acess the lecture from lectures
