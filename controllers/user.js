@@ -2,6 +2,7 @@ const User = require("../models/User.js"); // require User model
 const bcrypt=require("bcrypt"); // require the bcrypt for the storing the password 
 const jwt=require("jsonwebtoken");// require the jsonwebtoken for the jwt
 const sendMail = require("../middlewares/sendMail.js"); //require the sendingthe mail middleware to send the email to the user emaile
+const sendForgotMail=require("../middlewares/sendMail.js");
 const TryCatch = require("../middlewares/TryCatch.js");
 
 // controller for the register Route
@@ -126,4 +127,64 @@ const myProfile=TryCatch(async(req,res)=>{
      })
 });
 
-module.exports={register , verifyUser , loginUser ,myProfile};
+//create the route for the forgot password
+const ForgotPassword= TryCatch(async(req,res)=>{
+    const {email}=req.body;
+
+    const user= await User.findOne({email});
+
+    if(!user){
+        return res.status(404).json({
+            message:"No User With This Email ",
+        })
+    };
+
+    // now create the token for the password forgot
+
+    const token =jwt.sign({email},process.env.Forgot_Secret);
+    console.log("generated token ",token);
+    const data={email ,token } //store the email and token in data variable
+
+    await sendForgotMail("Learning Management System By Shubham Sharad Mane ",data) //sending the forgot password email to user 
+
+    user.resetPasswordExpire=Date.now()+5*60*1000;// set the time to the reset password
+
+    await user.save();
+
+    res.json({
+        message:"Reset Password Link is send To Your mail ",
+    })
+});
+
+//now creating the controller for reset the password 
+
+const ResetPassword=TryCatch(async(req,res)=>{ //when the user click on the button of reset in mail the user is redirect the url withe the token so for setting the pass we access the token from the query and decode this token 
+    const decodeData= jwt.verify(req.query.token,process.env.Forgot_Secret);
+
+    const user=await User.findOne({email:decodeData.email}); //finding the user by using email which gets from the decoded data . email
+
+    if(!user) return res.status(404).json({ //if we can not find the user with this email then send this message
+        message:"No user With This Email"
+    });
+
+    if(user.resetPasswordExpire === null) return res.status(400).json({  //this condition is used because if the user is reset the password and again try to reset the password using the same link so for this thing we use this condition
+        message:"Token Expired"
+    });
+
+    if(user.resetPasswordExpire < Date.now()) return res.status(400).json({
+        message:"Token Expired"
+    });
+    //after everything is done then store the password with hash form with salt value
+    const NewPassword= await bcrypt.hash(req.body.password,10);
+
+    user.password=NewPassword;
+    user.resetPasswordExpire=null;
+    await user.save();
+
+    res.json({
+        message:" Password Reset SuccessFull"
+    })
+
+})
+
+module.exports={register , verifyUser , loginUser ,myProfile, ForgotPassword , ResetPassword};
