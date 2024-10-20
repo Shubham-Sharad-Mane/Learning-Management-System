@@ -9,6 +9,6 @@ router.post("/course/:id",isAuth,isAdmin,uploadFiles,addLecture); //route is cre
 router.delete("/lecture/:id",isAuth,isAdmin,deleteLecture);//route is created for the delete the lectures
 router.delete("/course/:id",isAuth,isAdmin,deleteCourse);//this route is created for the delete the course
 router.get("/stats",isAuth,isAdmin,getAllStats);//this route is created for get the all information about  the user and courses and lectures
-router.put("/user/:id",isAuth,isAdmin,updateRole);//this route is created for the updating the role of user
+router.put("/user/:id",isAuth,updateRole);//this route is created for the updating the role of user
 router.get("/users",isAuth,isAdmin,getAllUser);//this route is created for the getting the all users
 module.exports=router;

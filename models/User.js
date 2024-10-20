@@ -18,6 +18,10 @@ const UserSchema=new mongoose.Schema({
         type:String,
         default:"user",
     },
+    mainrole:{ //we creted this because this function is created after completing the all project so wwe dont want to change teh routes
+        type:String,
+        default:"user",
+    },
     subscription:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Courses",

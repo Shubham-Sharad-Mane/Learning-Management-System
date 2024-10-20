@@ -134,6 +134,7 @@ const getAllUser=TryCatch(async(req,res)=>{
 
 //controller for the updateRole
 const updateRole=TryCatch(async(req,res)=>{
+    if(req.user.mainrole !== "superadmin") return res.status(403).json({message:"This EndPoint Assign to SuperAdmin",});
     const user=await User.findById(req.params.id); //find the user by its id
 
     if(user.role === "user"){
