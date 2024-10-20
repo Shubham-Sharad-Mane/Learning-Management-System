@@ -1,8 +1,8 @@
 const User = require("../models/User.js"); // require User model
 const bcrypt=require("bcrypt"); // require the bcrypt for the storing the password 
 const jwt=require("jsonwebtoken");// require the jsonwebtoken for the jwt
-const sendMail = require("../middlewares/sendMail.js"); //require the sendingthe mail middleware to send the email to the user emaile
-const sendForgotMail=require("../middlewares/sendMail.js");
+const {sendMail, sendForgotMail} = require("../middlewares/sendMail.js"); //require the sendingthe mail middleware to send the email to the user emaile
+// const sendForgotMail=require("../middlewares/sendMail.js");
 const TryCatch = require("../middlewares/TryCatch.js");
 
 // controller for the register Route
@@ -129,6 +129,7 @@ const myProfile=TryCatch(async(req,res)=>{
 
 //create the route for the forgot password
 const ForgotPassword= TryCatch(async(req,res)=>{
+ 
     const {email}=req.body;
 
     const user= await User.findOne({email});
@@ -142,7 +143,7 @@ const ForgotPassword= TryCatch(async(req,res)=>{
     // now create the token for the password forgot
 
     const token =jwt.sign({email},process.env.Forgot_Secret);
-    console.log("generated token ",token);
+    
     const data={email ,token } //store the email and token in data variable
 
     await sendForgotMail("Learning Management System By Shubham Sharad Mane ",data) //sending the forgot password email to user 

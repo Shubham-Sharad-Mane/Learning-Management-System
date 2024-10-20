@@ -156,5 +156,4 @@ const sendForgotMail=async(subject,data)=>{
     })
 
 }
-module.exports=sendForgotMail;
-module.exports=sendMail;
+module.exports={sendForgotMail,sendMail};
