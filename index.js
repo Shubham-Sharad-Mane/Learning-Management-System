@@ -15,7 +15,13 @@ module.exports={ instance };
 //use the middleware for  read the json data
 app.use(express.json());
 //use the cors
-app.use(cors());
+const corsOptions = {
+    origin: "https://learning-management-system-frontend-phi.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 const PORT =process.env.PORT  ; // defining the port 
 
